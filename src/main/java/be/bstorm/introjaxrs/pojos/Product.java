@@ -1,8 +1,6 @@
-package be.bstorm.introjaxrs.entities;
+package be.bstorm.introjaxrs.pojos;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
@@ -25,4 +23,8 @@ public class Product {
     @Getter @Setter
     @Column(nullable = false)
     private int price;
+
+    @Getter @Setter
+    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    private Category category;
 }

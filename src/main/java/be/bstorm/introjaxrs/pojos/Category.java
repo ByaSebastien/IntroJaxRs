@@ -1,23 +1,18 @@
-package be.bstorm.introjaxrs.entities;
+package be.bstorm.introjaxrs.pojos;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Range;
 
 @Entity
 @NoArgsConstructor @AllArgsConstructor
 @EqualsAndHashCode @ToString
-public class Stock {
+public class Category {
 
     @Getter
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Getter @Setter
-    @Column(nullable = false)
-    private int quantity;
-
-    @Range
-    @Getter @Setter
-    private int threshold;
+    @Column(length = 150, nullable = false, unique = true)
+    private String name;
 }

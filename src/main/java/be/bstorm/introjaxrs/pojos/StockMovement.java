@@ -1,4 +1,4 @@
-package be.bstorm.introjaxrs.entities;
+package be.bstorm.introjaxrs.pojos;
 
 import be.bstorm.introjaxrs.enums.MovementType;
 import jakarta.persistence.*;
@@ -25,4 +25,8 @@ public class StockMovement {
     @Column(length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
     private MovementType type;
+
+    @Getter @Setter
+    @ManyToOne(optional = false)
+    private Product product;
 }

@@ -1,7 +1,10 @@
-package be.bstorm.introjaxrs.entities;
+package be.bstorm.introjaxrs.pojos;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user_")
@@ -24,4 +27,16 @@ public class User {
     @Getter @Setter
     @Column(nullable = false)
     private String password;
+
+    @Getter
+    @ManyToMany
+    private Set<Role> roles = new HashSet<>();
+
+    public void addRole(Role role){
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role){
+        this.roles.remove(role);
+    }
 }

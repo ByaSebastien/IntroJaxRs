@@ -6,20 +6,22 @@
     <persistence-unit name="IntroJaxRs" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>be.bstorm.introjaxrs.entities.Category</class>
-        <class>be.bstorm.introjaxrs.entities.Order</class>
-        <class>be.bstorm.introjaxrs.entities.Product</class>
-        <class>be.bstorm.introjaxrs.entities.Role</class>
-        <class>be.bstorm.introjaxrs.entities.Stock</class>
-        <class>be.bstorm.introjaxrs.entities.StockMovement</class>
-        <class>be.bstorm.introjaxrs.entities.User</class>
+        <class>be.bstorm.introjaxrs.pojos.Category</class>
+        <class>be.bstorm.introjaxrs.pojos.Order</class>
+        <class>be.bstorm.introjaxrs.pojos.OrderLine</class>
+        <class>be.bstorm.introjaxrs.pojos.Product</class>
+        <class>be.bstorm.introjaxrs.pojos.Role</class>
+        <class>be.bstorm.introjaxrs.pojos.Stock</class>
+        <class>be.bstorm.introjaxrs.pojos.StockMovement</class>
+        <class>be.bstorm.introjaxrs.pojos.User</class>
 
         <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/intro_jax_rs"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
             <property name="jakarta.persistence.jdbc.password" value="postgres"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
         </properties>
