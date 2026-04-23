@@ -15,13 +15,9 @@ public class Stock {
 
     @Getter @Setter
     @Column(nullable = false)
-    private int quantity;
+    private int quantity = 0;
 
     @Range
     @Getter @Setter
     private int threshold;
-
-    @Getter @Setter
-    @OneToOne(optional = false)
-    private Product product;
 }

@@ -29,7 +29,7 @@ public class User {
     private String password;
 
     @Getter
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.MERGE})
     private Set<Role> roles = new HashSet<>();
 
     public void addRole(Role role){

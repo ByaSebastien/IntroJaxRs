@@ -21,12 +21,12 @@ public class OrderLine {
     private int price;
 
     @Getter
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE})
     @MapsId("orderId")
     private Order order;
 
     @Getter
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE})
     @MapsId("productId")
     private Product product;
 
@@ -41,10 +41,19 @@ public class OrderLine {
         this.id.setProductId(product.getId());
     }
 
+
+    public OrderLine(int quantity, int price, Order order, Product product) {
+        this.id = new OrderLineId(order.getId(), product.getId());
+        this.quantity = quantity;
+        this.price = price;
+        this.order = order;
+        this.product = product;
+    }
+
     @Embeddable
     @NoArgsConstructor @AllArgsConstructor
     @EqualsAndHashCode @ToString
-    private static class OrderLineId {
+    public static class OrderLineId {
 
         @Getter @Setter
         private UUID orderId;

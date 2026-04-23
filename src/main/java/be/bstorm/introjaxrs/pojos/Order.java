@@ -1,9 +1,12 @@
 package be.bstorm.introjaxrs.pojos;
 
+import be.bstorm.introjaxrs.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +23,10 @@ public class Order {
     private LocalDateTime orderDate;
 
     @Getter @Setter
-    @ManyToOne(optional = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @Getter @Setter
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE})
     private User user;
 }

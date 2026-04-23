@@ -43,6 +43,24 @@ public abstract class CrudDao<TEntity, TId> {
         }
     }
 
+    public void saveAll(List<TEntity> list) {
+        try(var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            int batchSize = 20;
+            for(int i = 0; i < list.size(); i++) {
+                em.persist(list.get(i));
+
+                if ((i + 1) % batchSize == 0) {
+                    em.flush();
+                    em.clear();
+                }
+            }
+
+            em.getTransaction().commit();
+        }
+    }
+
     public TEntity update(TEntity entity) {
         try(var em = emf.createEntityManager()) {
             var tx = em.getTransaction();

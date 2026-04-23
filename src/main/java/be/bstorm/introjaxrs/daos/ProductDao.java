@@ -20,15 +20,25 @@ public class ProductDao extends CrudDao<Product, UUID> {
         }
     }
 
-    public Optional<Product> findByIdWithCategory(UUID id) {
+    public Optional<Product> findByIdWithCategoryAndStock(UUID id) {
         try(EntityManager em =  emf.createEntityManager()) {
 
             return em.createQuery(
-                    "SELECT p FROM Product p JOIN FETCH p.category WHERE p.id = :id",
+                    "SELECT p FROM Product p JOIN FETCH p.category JOIN FETCH p.stock WHERE p.id = :id",
                     Product.class)
                     .setParameter("id", id)
                     .getResultStream()
                     .findFirst();
+        }
+    }
+
+    public List<Product> findByIdsWithStock(List<UUID> ids) {
+        try(EntityManager em =  emf.createEntityManager()) {
+            return em.createQuery(
+                    "SELECT p FROM Product p JOIN FETCH p.stock s WHERE p.id IN :ids",
+                    Product.class)
+                    .setParameter("ids", ids)
+                    .getResultList();
         }
     }
 }

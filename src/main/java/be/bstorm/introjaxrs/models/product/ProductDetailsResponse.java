@@ -11,7 +11,8 @@ public record ProductDetailsResponse(
         int price,
         String description,
         String image,
-        String category
+        String category,
+        int stock
 ) {
 
     public static ProductDetailsResponse fromProduct(Product p) {
@@ -22,7 +23,8 @@ public record ProductDetailsResponse(
                 p.getPrice(),
                 p.getDescription(),
                 p.getImage(),
-                p.getCategory().getName()
+                p.getCategory().getName(),
+                p.getStock().getQuantity()
         );
     }
 }

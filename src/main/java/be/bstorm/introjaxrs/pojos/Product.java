@@ -42,4 +42,12 @@ public class Product {
             fetch = FetchType.LAZY
     )
     private Category category;
+
+    @Getter @Setter
+    @OneToOne(
+            optional = false,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY
+    )
+    private Stock stock;
 }
