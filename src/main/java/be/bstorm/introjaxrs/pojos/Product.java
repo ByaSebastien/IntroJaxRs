@@ -19,12 +19,27 @@ public class Product {
     @Column(length = 150, nullable = false, unique = true)
     private String name;
 
+    @Getter @Setter
+    @Column(length = 50, nullable = false)
+    private String brand;
+
     @Range(max = Integer.MAX_VALUE)
     @Getter @Setter
     @Column(nullable = false)
     private int price;
 
     @Getter @Setter
-    @ManyToOne(optional = false, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @Column(length = 500)
+    private String description;
+
+    @Getter @Setter
+    private String image;
+
+    @Getter @Setter
+    @ManyToOne(
+            optional = false,
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE},
+            fetch = FetchType.LAZY
+    )
     private Category category;
 }

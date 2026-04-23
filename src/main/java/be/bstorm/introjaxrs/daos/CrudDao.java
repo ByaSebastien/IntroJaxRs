@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public abstract class CrudDao<TEntity, TId> {
 
-    private final EntityManagerFactory emf;
+    protected final EntityManagerFactory emf;
     private final Class<TEntity> entityClass;
 
     @SuppressWarnings("unchecked")
