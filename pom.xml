@@ -35,6 +35,11 @@
             <version>4.0.0-M2</version>
         </dependency>
         <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+            <version>4.0.0-M2</version>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-cdi2-se</artifactId>
             <version>4.0.0-M2</version>
