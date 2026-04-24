@@ -2,22 +2,21 @@ package be.bstorm.introjaxrs.resources;
 
 import be.bstorm.introjaxrs.daos.UserDao;
 import be.bstorm.introjaxrs.models.order.OrderRequest;
+import be.bstorm.introjaxrs.models.order.ValidateOrderRequest;
 import be.bstorm.introjaxrs.pojos.User;
 import be.bstorm.introjaxrs.services.OrderService;
 import jakarta.inject.Inject;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 @Path("/order")
 public class OrderResource {
@@ -35,7 +34,7 @@ public class OrderResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response post(@Valid OrderRequest orderRequest) {
+    public Response post(OrderRequest orderRequest) {
 
         Set<ConstraintViolation<OrderRequest>> violations = validator.validate(orderRequest);
         if (!violations.isEmpty()) {
@@ -63,4 +62,50 @@ public class OrderResource {
                     .build();
         }
     }
+
+    @PATCH
+    @Path("/validate/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validate(
+            @PathParam("id") UUID id,
+            ValidateOrderRequest validateOrderRequest
+    ) {
+
+        Set<ConstraintViolation<ValidateOrderRequest>> violations = validator.validate(validateOrderRequest);
+        if (!violations.isEmpty()) {
+            List<String> errors = violations.stream()
+                    .map(v -> v.getPropertyPath() + " " + v.getMessage())
+                    .toList();
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(Map.of("errors", errors))
+                    .build();
+        }
+
+        try{
+            orderService.validate(id,validateOrderRequest);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

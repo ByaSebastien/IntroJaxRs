@@ -20,4 +20,8 @@ public class Stock {
     @Range
     @Getter @Setter
     private int threshold;
+
+    @Range
+    @Getter @Setter
+    private int orderQuantity;
 }

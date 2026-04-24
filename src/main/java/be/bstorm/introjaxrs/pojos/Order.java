@@ -29,4 +29,15 @@ public class Order {
     @Getter @Setter
     @ManyToOne(optional = false, cascade = {CascadeType.MERGE})
     private User user;
+
+    @Getter @Setter
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    private Order baseOrder;
+
+    public Order(UUID id, LocalDateTime orderDate, OrderStatus orderStatus, User user) {
+        this.id = id;
+        this.orderDate = orderDate;
+        this.orderStatus = orderStatus;
+        this.user = user;
+    }
 }

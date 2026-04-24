@@ -13,5 +13,7 @@ public class HelloApplication extends ResourceConfig {
 		register(OpenApiResource.class);
 		register(AcceptHeaderOpenApiResource.class);
 	}
-
 }
+
+
+

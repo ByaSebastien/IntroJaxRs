@@ -41,13 +41,16 @@ public class OrderLine {
         this.id.setProductId(product.getId());
     }
 
-
-    public OrderLine(int quantity, int price, Order order, Product product) {
-        this.id = new OrderLineId(order.getId(), product.getId());
+    public OrderLine(int quantity, int price, Product product) {
         this.quantity = quantity;
         this.price = price;
-        this.order = order;
         this.product = product;
+    }
+
+    public OrderLine(int quantity, int price, Order order, Product product) {
+        this(quantity, price, product);
+        this.id = new OrderLineId(order.getId(), product.getId());
+        this.order = order;
     }
 
     @Embeddable
@@ -87,3 +90,4 @@ public class OrderLine {
 //    @ManyToOne(optional = false)
 //    private Product product;
 //}
+
