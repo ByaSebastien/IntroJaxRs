@@ -1,5 +1,6 @@
 package be.bstorm.introjaxrs.resources;
 
+import be.bstorm.introjaxrs.annotations.security.HasAuthority;
 import be.bstorm.introjaxrs.daos.UserDao;
 import be.bstorm.introjaxrs.models.order.OrderRequest;
 import be.bstorm.introjaxrs.models.order.ValidateOrderRequest;
@@ -34,6 +35,7 @@ public class OrderResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @HasAuthority(roles = "USER")
     public Response post(OrderRequest orderRequest) {
 
         Set<ConstraintViolation<OrderRequest>> violations = validator.validate(orderRequest);
@@ -67,6 +69,7 @@ public class OrderResource {
     @Path("/validate/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @HasAuthority(roles = "MANDAY")
     public Response validate(
             @PathParam("id") UUID id,
             ValidateOrderRequest validateOrderRequest

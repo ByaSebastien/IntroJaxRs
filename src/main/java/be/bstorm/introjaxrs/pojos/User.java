@@ -3,6 +3,7 @@ package be.bstorm.introjaxrs.pojos;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +32,12 @@ public class User {
     @Getter
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Role> roles = new HashSet<>();
+
+    public User(String email, String username, String password) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
 
     public void addRole(Role role){
         this.roles.add(role);

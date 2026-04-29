@@ -1,5 +1,6 @@
 package be.bstorm.introjaxrs.utils;
 
+import be.bstorm.introjaxrs.models.security.auth.UserResponse;
 import be.bstorm.introjaxrs.pojos.Role;
 import be.bstorm.introjaxrs.pojos.User;
 import io.jsonwebtoken.*;
@@ -18,7 +19,7 @@ public class JwtUtils {
 
     public JwtUtils() {
         this.builder = Jwts.builder().signWith(getSecretKey());
-        this.parser = Jwts.parser().decryptWith(getSecretKey()).build();
+        this.parser = Jwts.parser().verifyWith(getSecretKey()).build();
     }
 
     public String generateToken(User user) {
@@ -55,8 +56,17 @@ public class JwtUtils {
         return getClaims(token).getIssuedAt().before(now) && getClaims(token).getExpiration().after(now);
     }
 
+    public UserResponse getUser(String token) {
+        Integer id = getId(token);
+        String username = getUsername(token);
+        String email = getEmail(token);
+        List<String> roles = getRoles(token);
+
+        return new UserResponse(id, username, email, roles);
+    }
+
     private Claims getClaims(String token) {
-        return parser.parseEncryptedClaims(token).getPayload();
+        return parser.parseSignedClaims(token).getPayload();
     }
 
     private SecretKey getSecretKey() {

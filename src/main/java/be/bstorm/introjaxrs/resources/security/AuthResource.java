@@ -1,5 +1,6 @@
 package be.bstorm.introjaxrs.resources.security;
 
+import be.bstorm.introjaxrs.annotations.security.IsAnonymous;
 import be.bstorm.introjaxrs.models.security.auth.LoginRequest;
 import be.bstorm.introjaxrs.models.security.auth.RegisterRequest;
 import be.bstorm.introjaxrs.models.security.auth.UserResponse;
@@ -33,6 +34,7 @@ public class AuthResource {
     @Inject
     private JwtUtils jwtUtils;
 
+    @IsAnonymous
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -55,6 +57,7 @@ public class AuthResource {
         return Response.ok().build();
     }
 
+    @IsAnonymous
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)

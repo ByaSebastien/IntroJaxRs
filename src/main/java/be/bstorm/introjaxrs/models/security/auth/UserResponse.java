@@ -2,15 +2,25 @@ package be.bstorm.introjaxrs.models.security.auth;
 
 import be.bstorm.introjaxrs.pojos.Role;
 import be.bstorm.introjaxrs.pojos.User;
+import lombok.*;
 
+import java.security.Principal;
 import java.util.List;
 
-public record UserResponse(
-        Integer id,
-        String email,
-        String username,
-        List<String> roles
-) {
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode @ToString
+public class UserResponse implements Principal {
+
+    private Integer id;
+    private String email;
+    private String username;
+    private List<String> roles;
+
+    @Override
+    public String getName() {
+        return username;
+    }
 
     public static UserResponse fromUser(User user) {
         return new UserResponse(
