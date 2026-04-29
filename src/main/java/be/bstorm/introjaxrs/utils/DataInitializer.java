@@ -14,18 +14,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Initialise les données de base de l'application au démarrage.
+ *
+ * Crée les données de test si la base de données est vide:
+ * <ul>
+ *   <li>Rôles utilisateur (USER, ADMIN)</li>
+ *   <li>Utilisateurs de test (user, admin)</li>
+ *   <li>Catégories et produits d'exemple</li>
+ * </ul>
+ *
+ * S'exécute une seule fois au démarrage de l'application via
+ * l'événement CDI {@link Startup}.
+ *
+ * @author IntroJaxRs
+ * @version 1.0
+ */
 @ApplicationScoped
 public class DataInitializer {
 
+    /**
+     * DAO pour les opérations sur les produits
+     */
     @Inject
     private ProductDao productDao;
 
+    /**
+     * DAO pour les opérations sur les rôles
+     */
     @Inject
     private RoleDao roleDao;
 
+    /**
+     * DAO pour les opérations sur les utilisateurs
+     */
     @Inject
     private UserDao userDao;
 
+    /**
+     * Initialise les données au démarrage de l'application.
+     *
+     * Observeur CDI activé lors de l'événement {@link Startup}.
+     * Vérifie d'abord si la base de données contient déjà des données
+     * pour éviter les doublons lors de redémarrages.
+     *
+     * @param event l'événement de démarrage (non utilisé)
+     */
     public void init(@Observes Startup event) {
 
         if(userDao.count() == 0) {
@@ -79,7 +113,7 @@ public class DataInitializer {
             products.add(new Product(UUID.randomUUID(), "Whey Protein 1kg",    "MyProtein",   3499, "Protéine de lactosérum saveur chocolat",            null, food, new Stock(null, 110, 25, 50)));
             products.add(new Product(UUID.randomUUID(), "Barres énergétiques", "Clif Bar",    1299, "Pack de 12 barres aux céréales et fruits",          null, food, new Stock(null, 180, 50, 50)));
 
-            // Utilise la méthode SaveAll du repository avec batch processing
+            // Sauvegarde tous les produits
             productDao.saveAll(products);
         }
     }

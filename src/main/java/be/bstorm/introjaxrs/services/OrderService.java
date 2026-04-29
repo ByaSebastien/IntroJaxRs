@@ -19,21 +19,61 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Service métier pour la gestion des commandes.
+ *
+ * Gère le cycle de vie des commandes incluant:
+ * <ul>
+ *   <li>Création de nouvelles commandes</li>
+ *   <li>Validation et traitement des commandes</li>
+ *   <li>Gestion automatique des réapprovisionnements lorsque le stock est faible</li>
+ * </ul>
+ *
+ * @author IntroJaxRs
+ * @version 1.0
+ */
 @ApplicationScoped
 public class OrderService {
 
+    /**
+     * DAO pour les opérations sur les commandes
+     */
     @Inject
     private OrderDao orderDao;
 
+    /**
+     * DAO pour les opérations sur les lignes de commande
+     */
     @Inject
     private OrderLineDao orderLineDao;
 
+    /**
+     * DAO pour les opérations sur les produits
+     */
     @Inject
     ProductDao productDao;
 
+    /**
+     * DAO pour les opérations sur le stock
+     */
     @Inject
     StockDao stockDao;
 
+    /**
+     * Crée et sauvegarde une nouvelle commande.
+     *
+     * Effectue les vérifications suivantes:
+     * <ul>
+     *   <li>Tous les produits demandés existent</li>
+     *   <li>Le stock suffisant est disponible pour chaque produit</li>
+     * </ul>
+     *
+     * @param order la requête de commande contenant les lignes
+     * @param connectedUser l'utilisateur qui place la commande
+     * @throws RuntimeException si les produits n'existent pas ou le stock est insuffisant
+     *
+     * @see #handleOrderErrors(OrderRequest, Map)
+     */
     @Transactional
     public void postOrder(OrderRequest order, User connectedUser) {
 
@@ -52,6 +92,22 @@ public class OrderService {
         orderLineDao.saveAll(orderLines);
     }
 
+    /**
+     * Valide et traite une commande en attente.
+     *
+     * Gère trois scénarios:
+     * <ul>
+     *   <li>Commande complète: décrément du stock et envoi</li>
+     *   <li>Commande incomplète: création d'une commande de remplissage</li>
+     *   <li>Réapprovisionnement: création automatique d'une commande d'achat</li>
+     * </ul>
+     *
+     * @param id l'UUID de la commande à valider
+     * @param validateOrderRequest les lignes complètes et/ou incomplètes
+     * @throws RuntimeException si la commande n'existe pas ou les produits n'existent pas
+     *
+     * @see OrderStatus
+     */
     public void validate(UUID id, ValidateOrderRequest validateOrderRequest) {
 
         Order order = orderDao.findByIdWithUser(id).orElseThrow(() -> new RuntimeException("Order not found"));
@@ -207,6 +263,12 @@ public class OrderService {
         orderLineDao.saveAll(newOrderLines);
     }
 
+    /**
+     * Crée et sauvegarde une nouvelle commande en statut PENDING.
+     *
+     * @param connectedUser l'utilisateur qui place la commande
+     * @return la commande nouvellement créée
+     */
     private Order saveOrder(User connectedUser) {
         Order newOrder = new Order(
                 UUID.randomUUID(),
@@ -219,6 +281,12 @@ public class OrderService {
         return newOrder;
     }
 
+    /**
+     * Récupère une map des produits demandés indexée par UUID.
+     *
+     * @param order la requête de commande
+     * @return une map UUID -> Product
+     */
     private Map<UUID, Product> getProductMap(OrderRequest order) {
         List<UUID> requestedProductIds = order.orderLines().stream()
                 .map(OrderLineRequest::productId)
@@ -229,6 +297,14 @@ public class OrderService {
         return productMap;
     }
 
+    /**
+     * Construit une liste de lignes de commande à partir de la requête.
+     *
+     * @param order la requête de commande
+     * @param productMap la map des produits disponibles
+     * @param newOrder la commande à laquelle appartiennent les lignes
+     * @return la liste des lignes de commande
+     */
     private static List<OrderLine> buildOrderLine(OrderRequest order, Map<UUID, Product> productMap, Order newOrder) {
         List<OrderLine> orderLines = order.orderLines().stream()
                 .map(ol -> {
@@ -244,6 +320,19 @@ public class OrderService {
         return orderLines;
     }
 
+    /**
+     * Valide les erreurs dans une requête de commande.
+     *
+     * Vérifie:
+     * <ul>
+     *   <li>L'existence de chaque produit demandé</li>
+     *   <li>La disponibilité de stock suffisant</li>
+     * </ul>
+     *
+     * @param order la requête de commande
+     * @param productMap la map des produits avec stock
+     * @return une liste des messages d'erreur (vide si pas d'erreur)
+     */
     private static List<String> handleOrderErrors(OrderRequest order, Map<UUID, Product> productMap) {
         List<String> errors = new ArrayList<>();
 
@@ -264,3 +353,4 @@ public class OrderService {
         return errors;
     }
 }
+

@@ -19,19 +19,52 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Ressource JAX-RS pour la gestion des commandes.
+ *
+ * Fournit des endpoints pour créer et valider des commandes.
+ * Endpoints sécurisés nécessitant l'authentification et les rôles appropriés.
+ *
+ * @author IntroJaxRs
+ * @version 1.0
+ */
 @Path("/order")
 public class OrderResource {
 
-    // pour simuler authUser
+    /**
+     * DAO pour les opérations sur les utilisateurs
+     * TODO: remplacer par la récupération de l'utilisateur authentifié
+     */
     @Inject
     UserDao userDao;
 
+    /**
+     * Service métier pour les commandes
+     */
     @Inject
     OrderService orderService;
 
+    /**
+     * Validateur Jakarta pour les contraintes de validation
+     */
     @Inject
     Validator validator;
 
+    /**
+     * Crée une nouvelle commande.
+     *
+     * Nécessite le rôle USER.
+     * Valide les données de la requête avant de créer la commande.
+     *
+     * @param orderRequest la requête de commande avec les articles
+     * @return une réponse 201 CREATED en cas de succès
+     *
+     * @response 201 Commande créée avec succès
+     * @response 400 Erreur de validation ou stock insuffisant
+     * @response 403 Utilisateur non authentifié ou sans le rôle USER
+     *
+     * @throws RuntimeException si les produits n'existent pas ou le stock est insuffisant
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -65,6 +98,21 @@ public class OrderResource {
         }
     }
 
+    /**
+     * Valide et traite une commande en attente.
+     *
+     * Nécessite le rôle MANDAY (responsable de la validation).
+     * Gère les commandes complètes, incomplètes et les réapprovisionnements.
+     *
+     * @param id l'UUID de la commande à valider
+     * @param validateOrderRequest contient les articles complétés et/ou non livrables
+     * @return une réponse 202 ACCEPTED en cas de succès
+     *
+     * @response 202 Commande validée avec succès
+     * @response 400 Erreur de validation ou données invalides
+     * @response 403 Utilisateur non autorisé
+     * @response 404 Commande non trouvée
+     */
     @PATCH
     @Path("/validate/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -95,20 +143,4 @@ public class OrderResource {
                     .build();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
