@@ -16,20 +16,20 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Getter @Setter
+    @Getter
     @Column(length = 150, nullable = false, unique = true)
     private String email;
 
-    @Getter @Setter
+    @Getter
     @Column(length = 50, nullable = false, unique = true)
     private String username;
 
-    @Getter @Setter
+    @Getter
     @Column(nullable = false)
     private String password;
 
     @Getter
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     private Set<Role> roles = new HashSet<>();
 
     public void addRole(Role role){
@@ -38,5 +38,20 @@ public class User {
 
     public void removeRole(Role role){
         this.roles.remove(role);
+    }
+
+    public User setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
     }
 }
